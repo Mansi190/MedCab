@@ -1,0 +1,24 @@
+package com.example.ambcab;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+
+public class MainActivity extends AppCompatActivity {
+    private static int SPLASHTIME=2000;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.logo);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Intent homeIntent = new Intent(MainActivity.this,starting.class);
+                startActivity(homeIntent);
+                finish();
+            }
+        },SPLASHTIME);
+    }
+}

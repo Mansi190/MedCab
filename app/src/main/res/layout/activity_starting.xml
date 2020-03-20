@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/starting"
+    tools:context=".starting">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Let's Get Started"
+        android:fontFamily="@font/bold"
+        android:textSize="16pt"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:fontFamily="@font/light"
+        android:textColor="@color/black"
+        android:textSize="8pt"
+        android:text="Join Us Now And Enjoy\nCredit Free Shipping\nInstantly"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintVertical_bias="0.075" />
+
+    <Button
+        android:id="@+id/login"
+        android:layout_width="272dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="40dp"
+        android:text="Create Account"
+        android:background="@drawable/button_pressed"
+        android:textColor="@drawable/button1"
+        app:layout_constraintBottom_toTopOf="@+id/aboutus"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/aboutus"
+        android:layout_width="272dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="64dp"
+        android:text="About Us"
+        android:textColor="@color/red"
+        android:background="@drawable/button2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
