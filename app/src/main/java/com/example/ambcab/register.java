@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -14,7 +15,15 @@ import android.widget.ImageView;
 public class register extends AppCompatActivity {
     Button submit;
     EditText no;
+    String phoneNO;
+    boolean valid=false;
     ImageView tick;
+    private  View.OnClickListener registerOnClickListner=new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            register();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,28 +47,35 @@ public class register extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
                 if(no.length()==10){
                     tick.setVisibility(View.VISIBLE);
+                    tick.setImageResource(R.drawable.tick);
+                    valid=true;
                 }
                 else {
                     tick.setImageResource(R.drawable.wrong);
+                    valid=false;
                 }
 
             }
         });
-        submit.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_BUTTON_PRESS:
-                        submit.setBackground(getResources().getDrawable(R.drawable.button2));
-                        submit.setText("get code");
-                        submit.setTextColor(getResources().getColor(R.color.red));
-                    case MotionEvent.ACTION_BUTTON_RELEASE:
-                        submit.setBackground(getResources().getDrawable(R.drawable.button1));
-                        submit.setText("get code");
-                        submit.setTextColor(getResources().getColor(R.color.white));
-                }
-                return false;
-            }
-        });
+
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.slideinleft,R.anim.slideoutright);
+    }
+    private void register(){
+        Log.d("TAG",String.valueOf(valid));
+        System.out.println(valid);
+        if(valid){
+            phoneNO=no.getText().toString();
+            System.out.println(phoneNO);
+            Log.d("TAG",phoneNO);
+        }
+        else {
+
+        }
+
     }
 }

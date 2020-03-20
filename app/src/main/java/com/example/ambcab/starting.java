@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -19,13 +20,18 @@ public class starting extends AppCompatActivity {
             login();
         }
     };
+    private View.OnClickListener aboutOnClickListener =new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            about();
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_starting);
         login = (Button)findViewById(R.id.login);
         aboutus=(Button)findViewById(R.id.aboutus);
-        final Intent i = new Intent(getApplicationContext(),register.class);
         login.setOnClickListener(loginOnClickListener);
 
        /* login.setOnTouchListener(new View.OnTouchListener() {
@@ -73,6 +79,13 @@ public class starting extends AppCompatActivity {
 
     }
     private void login() {
+        Intent i = new Intent(this,register.class);
+        startActivity(i);
+        overridePendingTransition(R.anim.slideinright,R.anim.slideoutleft);
 
-            }
+
+    }
+    private void about(){
+
+    }
 }
