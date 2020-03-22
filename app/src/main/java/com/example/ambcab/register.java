@@ -2,6 +2,7 @@ package com.example.ambcab;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -32,6 +33,7 @@ public class register extends AppCompatActivity {
         submit=(Button)findViewById(R.id.button);
         no=(EditText)findViewById(R.id.phoneno);
         tick=(ImageView)findViewById(R.id.tick) ;
+        submit.setOnClickListener(registerOnClickListner);
         no.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -72,6 +74,9 @@ public class register extends AppCompatActivity {
             phoneNO=no.getText().toString();
             System.out.println(phoneNO);
             Log.d("TAG",phoneNO);
+            Intent i = new Intent(this,verifyotp.class);
+            startActivity(i);
+            overridePendingTransition(R.anim.slideinright,R.anim.slideoutleft);
         }
         else {
 
