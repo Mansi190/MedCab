@@ -4,10 +4,14 @@ package com.example.ambcab;
 import androidx.appcompat.app.AppCompatActivity;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -15,6 +19,29 @@ import android.widget.TextView;
 public class verifyotp extends AppCompatActivity {
     EditText digit1, digit2, digit3, digit4, digit5, digit6;
     TextView timer;
+    Button verify_button;
+    String OTP_received;
+    private  View.OnClickListener verifyOnClickListner=new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            verifyotp();
+        }
+    };
+    private void verifyotp(){
+        if(digit1.length()!=0 && digit2.length()!=0 && digit3.length()!=0 && digit4.length()!=0 && digit5.length()!=0 && digit6.length()!=0){
+            OTP_received=digit1.getText().toString();
+            OTP_received+=digit2.getText().toString();
+            OTP_received+=digit3.getText().toString();
+            OTP_received+=digit4.getText().toString();
+            OTP_received+=digit5.getText().toString();
+            OTP_received+=digit6.getText().toString();
+            Log.i("TAG", OTP_received);
+            Intent i = new Intent(this,Select_user.class);
+            startActivity(i);
+            overridePendingTransition(R.anim.slideinright,R.anim.slideoutleft);
+
+        }
+    }
 
 
     @Override
@@ -28,6 +55,8 @@ public class verifyotp extends AppCompatActivity {
         digit5=(EditText)findViewById(R.id.digit5);
         digit6=(EditText)findViewById(R.id.digit6);
         timer=(TextView) findViewById(R.id.timer);
+        verify_button=(Button)findViewById(R.id.verify);
+        verify_button.setOnClickListener(verifyOnClickListner);
         digit1.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {

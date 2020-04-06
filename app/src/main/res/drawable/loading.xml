@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:andoid="http://schemas.android.com/apk/res/android"
+    andoid:oneshot="false">
+
+    <item andoid:drawable="@drawable/b_1" andoid:duration="150"/>
+    <item andoid:drawable="@drawable/b_2" andoid:duration="150"/>
+    <item andoid:drawable="@drawable/b_3" andoid:duration="150"/>
+    <item andoid:drawable="@drawable/b_4" andoid:duration="150"/>
+    <item andoid:drawable="@drawable/b_5" andoid:duration="150"/>
+
+</animation-list>
