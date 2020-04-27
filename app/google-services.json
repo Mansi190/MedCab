@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "131898309542",
+    "firebase_url": "https://ambcab-a16a4.firebaseio.com",
+    "project_id": "ambcab-a16a4",
+    "storage_bucket": "ambcab-a16a4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:131898309542:android:ee261f0c600ece6fc1ad67",
+        "android_client_info": {
+          "package_name": "com.example.ambcab"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "131898309542-iqihmj0hgafj26l2nivqr6a6it9bl9kq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.ambcab",
+            "certificate_hash": "ff15a216fc5b27e4299ab0e16777c8aeebaa9fcb"
+          }
+        },
+        {
+          "client_id": "131898309542-83d3ofsp4g8nft0me86f3d1ih9d7ssei.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDWpLt1kGIF-I0Rv8dxPHzb8ZzTlw74fx8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "131898309542-83d3ofsp4g8nft0me86f3d1ih9d7ssei.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
