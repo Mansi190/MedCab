@@ -1,7 +1,9 @@
 package com.example.ambcab;
 
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.arch.core.executor.TaskExecutor;
 
 
 import android.content.Intent;
@@ -14,6 +16,19 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.TaskExecutors;
+import com.google.firebase.FirebaseException;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.PhoneAuthCredential;
+import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.auth.internal.zzl;
+
+import java.util.concurrent.TimeUnit;
 
 
 public class verifyotp extends AppCompatActivity {
@@ -21,6 +36,8 @@ public class verifyotp extends AppCompatActivity {
     TextView timer;
     Button verify_button;
     String OTP_received;
+    FirebaseAuth mAuth;
+    String verificationCodeSentBySystem;
     private  View.OnClickListener verifyOnClickListner=new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -35,19 +52,109 @@ public class verifyotp extends AppCompatActivity {
             OTP_received+=digit4.getText().toString();
             OTP_received+=digit5.getText().toString();
             OTP_received+=digit6.getText().toString();
-            Log.i("TAG", OTP_received);
-            Intent i = new Intent(this,Select_user.class);
-            startActivity(i);
-            overridePendingTransition(R.anim.slideinright,R.anim.slideoutleft);
+
+            verifycode(OTP_received);
+
+
 
         }
     }
 
 
+    private void verifycode(String codeByUser)
+    {
+        PhoneAuthCredential credential= PhoneAuthProvider.getCredential(verificationCodeSentBySystem,codeByUser);
+        signInWithCredential(credential);
+    }
+
+    private void signInWithCredential(PhoneAuthCredential credential) {
+        mAuth.signInWithCredential(credential).addOnCompleteListener(verifyotp.this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task)
+            {
+                    if(task.isSuccessful())
+                    {
+                        Intent intent=new Intent(getApplicationContext(),Select_user.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+
+                    }
+                    else{
+                        Log.i("TAG","create user failed");
+                        Toast.makeText(verifyotp.this, "Authentication failed.",
+                                Toast.LENGTH_SHORT).show();
+                    }
+
+            }
+        });
+                //.addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                  //  @Override
+                    //public void onComplete(@NonNull Task<AuthResult> task) {
+                      //  if(task.isSuccessful())
+                        //{
+                         //   Log.i("TAG", "OTP recieved");
+                           // Intent i = new Intent(verifyotp.this,Select_user.class);
+                            //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                           // startActivity(i);
+                            //overridePendingTransition(R.anim.slideinright,R.anim.slideoutleft);
+                        //}
+                        //else {
+                          //  Log.i("TAG","create user failed");
+                            //Toast.makeText(verifyotp.this, "Authentication failed.",
+                              //      Toast.LENGTH_SHORT).show();
+
+                        //}
+                    //}
+                //});
+    }
+    private void sendVerificationCodeToUser(String phoneNO)
+    {
+        PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                phoneNO,
+                60,
+                TimeUnit.SECONDS,
+                TaskExecutors.MAIN_THREAD,
+                mCallBack
+        );
+    }
+    private PhoneAuthProvider.OnVerificationStateChangedCallbacks
+            mCallBack=new PhoneAuthProvider.OnVerificationStateChangedCallbacks()
+    {
+
+        @Override
+        public void onCodeSent(@NonNull String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
+            super.onCodeSent(s, forceResendingToken);
+            verificationCodeSentBySystem = s;
+        }
+
+        @Override
+        public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential)
+        {
+            String OTP_received = phoneAuthCredential.getSmsCode();
+            if (OTP_received != null) {
+                verifycode(OTP_received);
+            }
+        }
+
+        @Override
+        public void onVerificationFailed(@NonNull FirebaseException e) {
+            Log.i("TAG", "verification of user failed" );
+            Toast.makeText(verifyotp.this, "verification of user failed",
+                    Toast.LENGTH_SHORT).show();
+
+        }
+    };
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verifyotp);
+
+        mAuth=FirebaseAuth.getInstance();
+        final String phoneNO=getIntent().getStringExtra("phoneNO");
+        sendVerificationCodeToUser( phoneNO);
+
+
         digit1=(EditText)findViewById(R.id.digit1);
         digit2=(EditText)findViewById(R.id.digit2);
         digit3=(EditText)findViewById(R.id.digit3);
@@ -57,6 +164,9 @@ public class verifyotp extends AppCompatActivity {
         timer=(TextView) findViewById(R.id.timer);
         verify_button=(Button)findViewById(R.id.verify);
         verify_button.setOnClickListener(verifyOnClickListner);
+
+
+
         digit1.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -217,9 +327,14 @@ public class verifyotp extends AppCompatActivity {
             }
 
             public void onFinish() {
+                //sendVerificationCodeToUser(phoneNO);     //function to resend OTP to user
                 timer.setText("done!");
             }
         }.start();
 
+
+
+
     }
+
 }

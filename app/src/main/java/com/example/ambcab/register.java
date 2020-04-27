@@ -13,6 +13,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 public class register extends AppCompatActivity {
     Button submit;
     EditText no;
@@ -72,9 +74,12 @@ public class register extends AppCompatActivity {
         System.out.println(valid);
         if(valid){
             phoneNO=no.getText().toString();
+            phoneNO="+91"+phoneNO;
+
             System.out.println(phoneNO);
             Log.d("TAG",phoneNO);
             Intent i = new Intent(this,verifyotp.class);
+            i.putExtra("phoneNO",phoneNO);
             startActivity(i);
             overridePendingTransition(R.anim.slideinright,R.anim.slideoutleft);
         }
@@ -82,5 +87,16 @@ public class register extends AppCompatActivity {
 
         }
 
+    }
+    @Override
+    protected void onStart(){
+        super.onStart();
+
+        if(FirebaseAuth.getInstance().getCurrentUser()!=null)
+        {
+            Intent intent=new Intent(this,MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        }
     }
 }

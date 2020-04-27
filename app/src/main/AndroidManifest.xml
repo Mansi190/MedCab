@@ -14,7 +14,9 @@
         <activity android:name=".PersonalDetails" />
         <activity android:name=".Select_user" />
         <activity android:name=".verifyotp" />
-        <activity android:name=".register" />
+        <activity android:name=".register" >
+
+        </activity>
         <activity android:name=".starting" />
         <activity android:name=".MainActivity">
             <intent-filter>
