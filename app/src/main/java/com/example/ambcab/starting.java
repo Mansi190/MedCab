@@ -12,6 +12,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 public class starting extends AppCompatActivity {
     Button login,aboutus;
     private View.OnClickListener loginOnClickListener = new View.OnClickListener() {
@@ -33,6 +35,15 @@ public class starting extends AppCompatActivity {
         login = (Button)findViewById(R.id.login);
         aboutus=(Button)findViewById(R.id.aboutus);
         login.setOnClickListener(loginOnClickListener);
+
+
+
+        /*if(FirebaseAuth.getInstance().getCurrentUser()!=null)
+        {
+            Intent intent=new Intent(this,patient_Homepage.class);                                      //
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        }*/
 
        /* login.setOnTouchListener(new View.OnTouchListener() {
             @Override

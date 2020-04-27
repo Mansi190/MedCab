@@ -152,7 +152,7 @@ public class verifyotp extends AppCompatActivity {
 
         mAuth=FirebaseAuth.getInstance();
         final String phoneNO=getIntent().getStringExtra("phoneNO");
-        sendVerificationCodeToUser( phoneNO);
+        sendVerificationCodeToUser(phoneNO);
 
 
         digit1=(EditText)findViewById(R.id.digit1);
