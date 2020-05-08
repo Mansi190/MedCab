@@ -7,14 +7,17 @@ import androidx.arch.core.executor.TaskExecutor;
 
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,10 +36,12 @@ import java.util.concurrent.TimeUnit;
 
 public class verifyotp extends AppCompatActivity {
     EditText digit1, digit2, digit3, digit4, digit5, digit6;
+    ImageView tick;
     TextView timer;
     Button verify_button;
     String OTP_received;
     FirebaseAuth mAuth;
+    static String phoneNO;
     String verificationCodeSentBySystem;
     private  View.OnClickListener verifyOnClickListner=new View.OnClickListener() {
         @Override
@@ -74,6 +79,8 @@ public class verifyotp extends AppCompatActivity {
             {
                     if(task.isSuccessful())
                     {
+                        tick.setVisibility(View.VISIBLE);
+                        tick.setImageResource(R.drawable.tick);
                         Intent intent=new Intent(getApplicationContext(),Select_user.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
@@ -81,6 +88,8 @@ public class verifyotp extends AppCompatActivity {
                     }
                     else{
                         Log.i("TAG","create user failed");
+                        tick.setVisibility(View.VISIBLE);
+                        tick.setImageResource(R.drawable.wrong);
                         Toast.makeText(verifyotp.this, "Authentication failed.",
                                 Toast.LENGTH_SHORT).show();
                     }
@@ -151,8 +160,8 @@ public class verifyotp extends AppCompatActivity {
         setContentView(R.layout.activity_verifyotp);
 
         mAuth=FirebaseAuth.getInstance();
-        final String phoneNO=getIntent().getStringExtra("phoneNO");
-        sendVerificationCodeToUser(phoneNO);
+        phoneNO=getIntent().getStringExtra("phoneNO");
+        sendVerificationCodeToUser( phoneNO);
 
 
         digit1=(EditText)findViewById(R.id.digit1);
@@ -164,6 +173,7 @@ public class verifyotp extends AppCompatActivity {
         timer=(TextView) findViewById(R.id.timer);
         verify_button=(Button)findViewById(R.id.verify);
         verify_button.setOnClickListener(verifyOnClickListner);
+        tick=(ImageView)findViewById(R.id.imageView8);
 
 
 
@@ -328,13 +338,43 @@ public class verifyotp extends AppCompatActivity {
 
             public void onFinish() {
                 //sendVerificationCodeToUser(phoneNO);     //function to resend OTP to user
-                timer.setText("done!");
+                timer.setText(Html.fromHtml("<p><u>Click here</u></p>"));
+                timer.setTextColor(Color.BLUE);
+                timer.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        resendotp();
+                    }
+
+
+                });
             }
         }.start();
 
+    }
+    private void resendotp() {
+        sendVerificationCodeToUser(phoneNO);
+        timer.setTextColor(Color.RED);
+        new CountDownTimer(60000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                timer.setText("0:"+millisUntilFinished / 1000);
+            }
+
+            public void onFinish() {
+                //sendVerificationCodeToUser(phoneNO);     //function to resend OTP to user
+                timer.setText(Html.fromHtml("<p><u>Click here</u></p>"));
+                timer.setTextColor(Color.BLUE);
+                timer.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        resendotp();
+                    }
 
 
+                });
+            }
+        }.start();
 
     }
-
 }

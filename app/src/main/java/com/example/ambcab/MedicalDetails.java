@@ -106,7 +106,7 @@ public class MedicalDetails extends AppCompatActivity {
     }
 
     public void submit(View view) {
-        Intent i = new Intent(this,patient_Homepage.class);
+        Intent i = new Intent(this,BottomNavigation.class);
         startActivity(i);
     }
 }
