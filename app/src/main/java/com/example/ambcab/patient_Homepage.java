@@ -2,6 +2,7 @@ package com.example.ambcab;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
@@ -13,6 +14,7 @@ import android.widget.ProgressBar;
 public class patient_Homepage extends AppCompatActivity {
     ProgressBar select;
     ImageButton emergency;
+    int option=0;
     private Handler mHandler = new Handler();
     public int mValue=0;
 
@@ -24,13 +26,58 @@ public class patient_Homepage extends AppCompatActivity {
                   if(mValue<100) {
                       mValue++;
                       select.setProgress(mValue);
+                      if(select.getProgress()>=32)
+                      {
+                          select.setBackground(getDrawable(R.drawable.bacground_progress1));
+                          option=1;
+                      }
+                      if(select.getProgress()>=49)
+                      {
+                          select.setBackground(getDrawable(R.drawable.bacground_progress2));
+                          option=2;
+                      }
+                      if(select.getProgress()>=80)
+                      {
+                          select.setBackground(getDrawable(R.drawable.bacground_progress3));
+                          option=3;
+                      }
                   }
                 mHandler.postDelayed(incrementRunnable, 25); // call for a delayed re-check of the button's state through our handler. The delay of 100ms can be changed as needed.
             }
             else {
-                if(mValue>0) {
-                    mValue-=5;
-                    select.setProgress(mValue);
+                switch (option) {
+                    case 0:{
+                        if (mValue > 0) {
+                            mValue -= 5;
+                            select.setProgress(mValue);
+                            }
+
+                        }
+                        break;
+                    case 1:{
+                        if (mValue > 32) {
+                            mValue -= 5;
+                            select.setProgress(mValue);
+                        }
+                        if (mValue < 32) select.setProgress(32);
+                        break;
+                    }
+                    case 2:{
+                        if (mValue > 49) {
+                            mValue -= 5;
+                            select.setProgress(mValue);
+                        }
+                        if (mValue < 49) select.setProgress(49);
+                        break;
+                    }
+                    case 3:{
+                        if (mValue > 80) {
+                            mValue -= 5;
+                            select.setProgress(mValue);
+                        }
+                        if (mValue < 80) select.setProgress(80);
+                        break;
+                    }
                 }
                 mHandler.postDelayed(incrementRunnable, 25);
 
