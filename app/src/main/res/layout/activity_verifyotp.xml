@@ -27,7 +27,7 @@
         android:fontFamily="@font/light"
         android:textColor="@color/black"
         android:textSize="8pt"
-        android:text="Enter A 4 Digit Number That\n
+        android:text="Enter A 6 Digit Number That\n
  Was Sent To"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

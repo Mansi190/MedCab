@@ -9,13 +9,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".welcomePage"></activity>
+        <activity android:name=".ambulanceRegistration"></activity>
+        <activity android:name=".welcomePage" />
         <activity android:name=".patient_Homepage" />
         <activity android:name=".MedicalDetails" />
         <activity android:name=".PersonalDetails" />
         <activity android:name=".Select_user" />
         <activity android:name=".verifyotp" />
-        <activity android:name=".register"></activity>
+        <activity android:name=".register" />
         <activity android:name=".starting" />
         <activity android:name=".MainActivity">
             <intent-filter>
