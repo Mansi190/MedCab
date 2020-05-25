@@ -3,6 +3,7 @@ package com.example.ambcab;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -67,6 +68,8 @@ public class ambulanceRegistration extends AppCompatActivity {
                     regno.setError(null);
                 Toast.makeText(ambulanceRegistration.this, "Ambulance is present in database",
                         Toast.LENGTH_SHORT).show();
+                    Intent intent=new Intent(getApplicationContext(),Maps_activity.class);
+                    startActivity(intent);
                 }
                 else
                     {
