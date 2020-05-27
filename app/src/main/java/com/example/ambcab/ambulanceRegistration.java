@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -21,6 +23,7 @@ public class ambulanceRegistration extends AppCompatActivity {
 
     EditText regno;
     Button button;
+    ImageView tick;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +32,7 @@ public class ambulanceRegistration extends AppCompatActivity {
         button=findViewById(R.id.button);
         regno=findViewById(R.id.editText);
         button.setOnClickListener(buttonOnClickListner);
+        tick=findViewById(R.id.tick);
     }
 
     private View.OnClickListener buttonOnClickListner = new View.OnClickListener()
@@ -90,6 +94,7 @@ public class ambulanceRegistration extends AppCompatActivity {
         if (regNO.isEmpty())
         {
             regno.setError("Ambulance ID cannot be empty");
+            tick.setVisibility(View.INVISIBLE);
             return false;
         }
        /* else if (!regNO.matches(noWhiteSpace))
@@ -100,6 +105,9 @@ public class ambulanceRegistration extends AppCompatActivity {
        else if (regNO.length() != 5)
         {
             regno.setError("Enter Valid ID");
+            tick.setVisibility(View.VISIBLE);
+            tick.setImageResource(R.drawable.wrong);
+
             return false;
         }
         else
