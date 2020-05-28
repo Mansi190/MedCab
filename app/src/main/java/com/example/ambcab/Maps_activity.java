@@ -2,12 +2,20 @@ package com.example.ambcab;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.motion.widget.MotionLayout;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -23,8 +31,25 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
 public class Maps_activity extends AppCompatActivity implements OnMapReadyCallback {
-
+    ProgressBar progressBar;
+    TextView textView;
     Location currentLocation;
+
+
+    private  View.OnClickListener startOnClickListner=new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            startShift();
+        }
+    };
+
+    private void startShift() {
+
+        progressBar.setVisibility(View.VISIBLE);
+        textView.setVisibility(View.VISIBLE);
+        textView.setText("Searching for patient");
+    }
+
     FusedLocationProviderClient fusedLocationProviderClient;
     private static final int REQUEST_CODE=101;
 
@@ -33,8 +58,18 @@ public class Maps_activity extends AppCompatActivity implements OnMapReadyCallba
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps_activity);
 
+        progressBar=(ProgressBar)findViewById(R.id.progressBar2);
+        textView=(TextView)findViewById(R.id.textView16);
+        textView.setOnClickListener(startOnClickListner);
+
+
+
+
+
+
         fusedLocationProviderClient= LocationServices.getFusedLocationProviderClient(this);
         fetchLastLocation();
+
 
     }
 

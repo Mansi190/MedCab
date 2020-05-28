@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.motion.widget.MotionLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Maps_activity"
-    app:layoutDescription="@xml/activity_maps_activity">
+    tools:context=".Maps_activity">
 
     <fragment
         android:id="@+id/google_map"
@@ -25,7 +24,7 @@
         android:background="@drawable/ambulance_homepage"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent">
 
         <ProgressBar
@@ -33,9 +32,9 @@
             style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="88dp"
-            android:layout_marginTop="16dp"
-            android:visibility="invisible"
+            android:layout_marginStart="104dp"
+            android:layout_marginTop="32dp"
+
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -44,7 +43,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/medium"
-            android:text="start shift"
+            android:text="Waiting for patient"
             android:textColor="@color/white"
 
             app:layout_constraintBottom_toBottomOf="@+id/progressBar2"
@@ -63,6 +62,7 @@
             android:layout_marginStart="64dp"
             android:layout_marginTop="32dp"
             android:visibility="invisible"
+
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ambulance_patienticon" />
@@ -89,9 +89,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="64dp"
             android:layout_marginTop="28dp"
+            android:visibility="invisible"
             android:fontFamily="@font/bold"
             android:text="Status : "
-            android:visibility="invisible"
             android:textColor="@color/white"
             android:textSize="11dp"
 
@@ -99,4 +99,5 @@
             app:layout_constraintTop_toBottomOf="@+id/imageView12" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.constraintlayout.motion.widget.MotionLayout >
+
+</androidx.constraintlayout.widget.ConstraintLayout>
