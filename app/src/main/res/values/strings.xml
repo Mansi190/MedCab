@@ -4,5 +4,5 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Contact</string>
     <string name="title_notifications">Profile</string>
-    <string name="maps_key" translatable="false">//AIzaSyAanf0PGz5aRWfbk19Dsn7vjYdeO4BEiUE</string>
+    <string name="maps_key" translatable="false">AIzaSyAanf0PGz5aRWfbk19Dsn7vjYdeO4BEiUE</string>
 </resources>
