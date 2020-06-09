@@ -7,12 +7,27 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RadioButton;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 public class MedicalDetails extends AppCompatActivity {
+    FirebaseDatabase rootNode;
+    DatabaseReference reference;
+
+    String weight,age,emergencyNO;
     Dialog blood_group_selector;
     String bloodgroup;
-    Button blood_group_Button;
+    Button blood_group_Button,Submit_button;
+    EditText regWeight,regAge,regEmergencyNO;
+    private  View.OnClickListener SubmitOnClickListner=new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            submit();
+        }
+    };
 
 
     @Override
@@ -20,8 +35,12 @@ public class MedicalDetails extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_medical_details);
         blood_group_Button=(Button)findViewById(R.id.blood_button);
-
+        Submit_button=findViewById(R.id.button);
         blood_group_selector=new Dialog(this);
+        Submit_button.setOnClickListener(SubmitOnClickListner);
+        regWeight=findViewById(R.id.editText);
+        regAge=findViewById(R.id.editText1);
+        regEmergencyNO=findViewById(R.id.editText2);
 
 
 
@@ -39,7 +58,7 @@ public class MedicalDetails extends AppCompatActivity {
         switch(view.getId()) {
             case R.id.radioButton12:
                 if (checked) {
-                    // Pirates are the best
+
                     bloodgroup = "A+";
                     blood_group_Button.setText(bloodgroup);
                     blood_group_selector.dismiss();
@@ -47,7 +66,7 @@ public class MedicalDetails extends AppCompatActivity {
                 }
             case R.id.radioButton13:
                 if (checked) {
-                    // Ninjas rule
+
                     bloodgroup = "B+";
                     blood_group_Button.setText(bloodgroup);
                     blood_group_selector.dismiss();
@@ -55,7 +74,7 @@ public class MedicalDetails extends AppCompatActivity {
                 }
             case R.id.radioButton14:
                 if (checked) {
-                    // Pirates are the best
+
                     bloodgroup = "AB+";
                     blood_group_Button.setText(bloodgroup);
                     blood_group_selector.dismiss();
@@ -63,7 +82,7 @@ public class MedicalDetails extends AppCompatActivity {
                 }
             case R.id.radioButton15:
                 if (checked) {
-                    // Ninjas rule
+
                     bloodgroup = "O+";
                     blood_group_Button.setText(bloodgroup);
                     blood_group_selector.dismiss();
@@ -72,7 +91,7 @@ public class MedicalDetails extends AppCompatActivity {
 
             case R.id.radioButton20:
                 if (checked) {
-                    // Pirates are the best
+
                     bloodgroup = "A-";
                     blood_group_Button.setText(bloodgroup);
                     blood_group_selector.dismiss();
@@ -80,7 +99,7 @@ public class MedicalDetails extends AppCompatActivity {
                 }
             case R.id.radioButton21:
                 if (checked) {
-                    // Ninjas rule
+
                     bloodgroup = "B-";
                     blood_group_Button.setText(bloodgroup);
                     blood_group_selector.dismiss();
@@ -88,7 +107,7 @@ public class MedicalDetails extends AppCompatActivity {
                 }
             case R.id.radioButton22:
                 if (checked) {
-                    // Pirates are the best
+
                     bloodgroup = "AB-";
                     blood_group_Button.setText(bloodgroup);
                     blood_group_selector.dismiss();
@@ -96,7 +115,7 @@ public class MedicalDetails extends AppCompatActivity {
                 }
             case R.id.radioButton23:
                 if (checked) {
-                    // Ninjas rule
+
                     bloodgroup = "O-";
                     blood_group_Button.setText(bloodgroup);
                     blood_group_selector.dismiss();
@@ -105,7 +124,22 @@ public class MedicalDetails extends AppCompatActivity {
         }
     }
 
-    public void submit(View view) {
+    public void submit() {
+   /*
+        rootNode= FirebaseDatabase.getInstance();
+        reference=rootNode.getReference("patientUsers");
+
+        final String name=getIntent().getStringExtra("name");
+        final String email=getIntent().getStringExtra("email");
+        final String contactNo=getIntent().getStringExtra("contactNo");
+        final String DOB=getIntent().getStringExtra("DOB");
+        weight=regWeight.getText().toString();
+        age=regAge.getText().toString();
+        emergencyNO=regEmergencyNO.getText().toString();
+
+        patientUserHelperClass helperClass=new patientUserHelperClass(name,email,DOB,contactNo,bloodgroup,weight,age,emergencyNO);
+
+        reference.child(contactNo).setValue(helperClass);*/
         Intent i = new Intent(this,BottomNavigation.class);
         startActivity(i);
     }

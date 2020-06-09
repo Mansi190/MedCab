@@ -16,6 +16,7 @@
         <activity android:name=".Maps_activity"></activity>
         <activity android:name=".ambulanceRegistration" />
         <activity android:name=".welcomePage" />
+        <activity android:name=".BottomNavigation"/>
         <activity android:name=".patient_Homepage" />
         <activity android:name=".MedicalDetails" />
         <activity android:name=".PersonalDetails" />
