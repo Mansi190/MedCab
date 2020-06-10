@@ -38,12 +38,6 @@ public class starting extends AppCompatActivity {
 
 
 
-        /*if(FirebaseAuth.getInstance().getCurrentUser()!=null)
-        {
-            Intent intent=new Intent(this,patient_Homepage.class);                                      //
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-        }*/
 
        /* login.setOnTouchListener(new View.OnTouchListener() {
             @Override

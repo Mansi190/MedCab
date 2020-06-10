@@ -10,16 +10,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class MedicalDetails extends AppCompatActivity {
     FirebaseDatabase rootNode;
     DatabaseReference reference;
+    FirebaseUser user;
 
     String weight,age,emergencyNO;
     Dialog blood_group_selector;
-    String bloodgroup;
+    String bloodgroup,userUid;
     Button blood_group_Button,Submit_button;
     EditText regWeight,regAge,regEmergencyNO;
     private  View.OnClickListener SubmitOnClickListner=new View.OnClickListener() {
@@ -41,6 +44,9 @@ public class MedicalDetails extends AppCompatActivity {
         regWeight=findViewById(R.id.editText);
         regAge=findViewById(R.id.editText1);
         regEmergencyNO=findViewById(R.id.editText2);
+
+        user=FirebaseAuth.getInstance().getCurrentUser();
+        userUid =user.getUid();
 
 
 
@@ -125,10 +131,13 @@ public class MedicalDetails extends AppCompatActivity {
     }
 
     public void submit() {
-   /*
+
         rootNode= FirebaseDatabase.getInstance();
         reference=rootNode.getReference("patientUsers");
 
+
+
+        //final String phoneNo=getIntent().getStringExtra("phoneNO");
         final String name=getIntent().getStringExtra("name");
         final String email=getIntent().getStringExtra("email");
         final String contactNo=getIntent().getStringExtra("contactNo");
@@ -139,7 +148,7 @@ public class MedicalDetails extends AppCompatActivity {
 
         patientUserHelperClass helperClass=new patientUserHelperClass(name,email,DOB,contactNo,bloodgroup,weight,age,emergencyNO);
 
-        reference.child(contactNo).setValue(helperClass);*/
+        reference.child(userUid).setValue(helperClass);
         Intent i = new Intent(this,BottomNavigation.class);
         startActivity(i);
     }

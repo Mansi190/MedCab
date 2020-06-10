@@ -41,7 +41,7 @@ public class Select_user extends AppCompatActivity
     }
 
     private void Patient() {
-        Intent i = new Intent(this, PersonalDetails.class);
+        Intent i = new Intent(this, register.class);
         startActivity(i);
         overridePendingTransition(R.anim.slideinright, R.anim.slideoutleft);
     }

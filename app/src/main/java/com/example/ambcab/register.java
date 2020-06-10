@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class register extends AppCompatActivity {
     Button submit;
@@ -36,7 +37,10 @@ public class register extends AppCompatActivity {
         no=(EditText)findViewById(R.id.phoneno);
         tick=(ImageView)findViewById(R.id.tick) ;
         submit.setOnClickListener(registerOnClickListner);
+
+
         no.addTextChangedListener(new TextWatcher() {
+
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 

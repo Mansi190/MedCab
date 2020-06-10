@@ -81,7 +81,7 @@ public class verifyotp extends AppCompatActivity {
                     {
                         tick.setVisibility(View.VISIBLE);
                         tick.setImageResource(R.drawable.tick);
-                        Intent intent=new Intent(getApplicationContext(),Select_user.class);
+                        Intent intent=new Intent(getApplicationContext(),PersonalDetails.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
 

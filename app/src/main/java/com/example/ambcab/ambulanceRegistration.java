@@ -24,6 +24,8 @@ public class ambulanceRegistration extends AppCompatActivity {
     EditText regno;
     Button button;
     ImageView tick;
+    DataSnapshot dataSnapshot;
+    DatabaseReference databaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +60,7 @@ public class ambulanceRegistration extends AppCompatActivity {
 
     private void isUser()
     {
-        String regNO = regno.getText().toString().trim();
+        final String regNO = regno.getText().toString().trim();
         DatabaseReference reference= FirebaseDatabase.getInstance().getReference("ambulanceId" );
 
         Query checkUser=reference.orderByChild("Id").equalTo(regNO);
@@ -72,7 +74,10 @@ public class ambulanceRegistration extends AppCompatActivity {
                     regno.setError(null);
                 Toast.makeText(ambulanceRegistration.this, "Ambulance is present in database",
                         Toast.LENGTH_SHORT).show();
+
+
                     Intent intent=new Intent(getApplicationContext(),Maps_activity.class);
+                    intent.putExtra("regNO",regNO);
                     startActivity(intent);
                 }
                 else
