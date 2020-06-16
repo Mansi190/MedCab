@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -18,7 +19,7 @@ import com.google.firebase.database.FirebaseDatabase;
 public class MedicalDetails extends AppCompatActivity {
     FirebaseDatabase rootNode;
     DatabaseReference reference;
-    FirebaseUser user;
+    FirebaseUser firebaseUser;
 
     String weight,age,emergencyNO;
     Dialog blood_group_selector;
@@ -44,9 +45,9 @@ public class MedicalDetails extends AppCompatActivity {
         regWeight=findViewById(R.id.editText);
         regAge=findViewById(R.id.editText1);
         regEmergencyNO=findViewById(R.id.editText2);
+        firebaseUser= FirebaseAuth.getInstance().getCurrentUser();
+        userUid=firebaseUser.getUid();
 
-        user=FirebaseAuth.getInstance().getCurrentUser();
-        userUid =user.getUid();
 
 
 
@@ -135,9 +136,6 @@ public class MedicalDetails extends AppCompatActivity {
         rootNode= FirebaseDatabase.getInstance();
         reference=rootNode.getReference("patientUsers");
 
-
-
-        //final String phoneNo=getIntent().getStringExtra("phoneNO");
         final String name=getIntent().getStringExtra("name");
         final String email=getIntent().getStringExtra("email");
         final String contactNo=getIntent().getStringExtra("contactNo");

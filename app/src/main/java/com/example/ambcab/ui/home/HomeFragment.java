@@ -1,7 +1,17 @@
 package com.example.ambcab.ui.home;
 
+import android.Manifest;
 import android.animation.ValueAnimator;
+import android.app.Activity;
+import android.content.pm.PackageManager;
+
 import android.graphics.drawable.Drawable;
+import android.location.Location;
+
+
+import com.example.ambcab.BottomNavigation;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.location.LocationListener;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -14,11 +24,34 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.ambcab.R;
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
-public class HomeFragment extends Fragment {
+
+public class HomeFragment extends Fragment implements LocationListener,GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener{
+    Location mLastLocation;
+    LocationRequest mLocationRequest;
+    GoogleApiClient mGoogleApiClient;
+    DatabaseReference databaseReference;
+    String userUid;
+    FirebaseUser firebaseUser;
+
+
+
     ProgressBar select;
     ImageButton emergency;
     ImageView particle,particle1,imageView;
@@ -26,6 +59,7 @@ public class HomeFragment extends Fragment {
     int option=0;
     private Handler mHandler = new Handler();
     public int mValue=0;
+
 
     private Runnable incrementRunnable = new Runnable() {
         @Override
@@ -90,6 +124,7 @@ public class HomeFragment extends Fragment {
                         if (mValue > 32) {
                             mValue -= 5;
                             select.setProgress(mValue);
+                            getlocation();
 
                         }
                         if (mValue < 32) select.setProgress(32);
@@ -141,6 +176,16 @@ public class HomeFragment extends Fragment {
         text3=(TextView)root.findViewById(R.id.textView12);
         text4=(TextView)root.findViewById(R.id.textView13);
         text5=(TextView)root.findViewById(R.id.textView14);
+        firebaseUser= FirebaseAuth.getInstance().getCurrentUser();
+        userUid=firebaseUser.getUid();
+        BottomNavigation activity=(BottomNavigation) getActivity();
+        mGoogleApiClient=activity.hi();
+
+
+
+
+
+
 
         final ValueAnimator animator = ValueAnimator.ofFloat(0.0f, 1.0f);
         animator.setRepeatCount(ValueAnimator.INFINITE);
@@ -166,5 +211,48 @@ public class HomeFragment extends Fragment {
         });
 
         return root;
+    }
+
+    void getlocation(){
+        mLocationRequest=new LocationRequest();
+        mLocationRequest.setInterval(10000);
+        mLocationRequest.setFastestInterval(10000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        if (ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) !=PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION)!=PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,mLocationRequest, (com.google.android.gms.location.LocationListener) this);
+    }
+
+
+
+    @Override
+    public void onLocationChanged(Location location) {
+        mLastLocation=location;
+        LatLng latLng=new LatLng(location.getLatitude(),location.getLongitude());
+        databaseReference=FirebaseDatabase.getInstance().getReference("patientUsers");
+        //databaseReference.child(userUid).setValue(regNO);
+        DatabaseReference ref=FirebaseDatabase.getInstance().getReference(userUid);
+
+        GeoFire geoFire=new GeoFire(ref);
+        geoFire.setLocation(userUid,new GeoLocation(mLastLocation.getLatitude(),mLastLocation.getLongitude()));
+
+    }
+
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
     }
 }

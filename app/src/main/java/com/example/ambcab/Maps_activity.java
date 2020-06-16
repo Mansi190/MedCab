@@ -152,8 +152,8 @@ public class Maps_activity extends AppCompatActivity implements OnMapReadyCallba
     protected synchronized void buildGoogleApiClient()
     {
         mGoogleApiClient=new GoogleApiClient.Builder(this).addConnectionCallbacks(this).addOnConnectionFailedListener(this).addApi(LocationServices.API).build(); {
-        mGoogleApiClient.connect();
-    }
+            mGoogleApiClient.connect();
+        }
     }
 
 

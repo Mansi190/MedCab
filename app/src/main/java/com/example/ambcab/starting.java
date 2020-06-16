@@ -91,6 +91,10 @@ public class starting extends AppCompatActivity {
 
     }
     private void about(){
+        Intent i = new Intent(this,Aboutus.class);
+        startActivity(i);
+        overridePendingTransition(R.anim.slideinright,R.anim.slideoutleft);
+
 
     }
 }
