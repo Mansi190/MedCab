@@ -138,7 +138,7 @@ public class MedicalDetails extends AppCompatActivity {
 
         final String name=getIntent().getStringExtra("name");
         final String email=getIntent().getStringExtra("email");
-        final String contactNo=getIntent().getStringExtra("contactNo");
+        final String contactNo=getIntent().getStringExtra("contactNo");         //TODO:send data to home fragment and add it to firebase
         final String DOB=getIntent().getStringExtra("DOB");
         weight=regWeight.getText().toString();
         age=regAge.getText().toString();

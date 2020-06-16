@@ -10,6 +10,8 @@ import android.location.Location;
 
 
 import com.example.ambcab.BottomNavigation;
+import com.firebase.geofire.GeoQuery;
+import com.firebase.geofire.GeoQueryEventListener;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.location.LocationListener;
 import android.os.Bundle;
@@ -38,8 +40,11 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
 
 
 public class HomeFragment extends Fragment implements LocationListener,GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener{
@@ -50,8 +55,10 @@ public class HomeFragment extends Fragment implements LocationListener,GoogleApi
     String userUid;
     FirebaseUser firebaseUser;
 
-
-
+    private int radius=1;
+    private Boolean ambulanceFound=false;
+    private String ambId;
+    LatLng pickuplocation;
     ProgressBar select;
     ImageButton emergency;
     ImageView particle,particle1,imageView;
@@ -126,6 +133,7 @@ public class HomeFragment extends Fragment implements LocationListener,GoogleApi
                             select.setProgress(mValue);
                             getlocation();
 
+
                         }
                         if (mValue < 32) select.setProgress(32);
                         break;
@@ -155,6 +163,52 @@ public class HomeFragment extends Fragment implements LocationListener,GoogleApi
         }
     };
 
+    private void getClosestDriver() {
+
+        DatabaseReference ambLocation=FirebaseDatabase.getInstance().getReference().child("activeAmb");
+        GeoFire geoFire=new GeoFire(ambLocation);
+
+        GeoQuery geoQuery=geoFire.queryAtLocation(new GeoLocation(pickuplocation.latitude,pickuplocation.longitude),radius);
+        geoQuery.removeAllListeners();
+        geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
+            @Override
+            public void onKeyEntered(String key, GeoLocation location) {
+                if(!ambulanceFound) {
+                    ambulanceFound = true;
+                    ambId=key;
+
+                    DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference().child("activeAmb").child(ambId);
+                    HashMap hmap=new HashMap();
+                    hmap.put("assingnedPatientId",userUid);
+                    databaseReference.updateChildren(hmap);
+                }
+            }
+
+            @Override
+            public void onKeyExited(String key) {
+
+            }
+
+            @Override
+            public void onKeyMoved(String key, GeoLocation location) {
+
+            }
+
+            @Override
+            public void onGeoQueryReady() {
+                if(!ambulanceFound){
+                    radius++;
+                    getClosestDriver();
+                }
+            }
+
+            @Override
+            public void onGeoQueryError(DatabaseError error) {
+
+            }
+        });
+
+    }
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -176,8 +230,7 @@ public class HomeFragment extends Fragment implements LocationListener,GoogleApi
         text3=(TextView)root.findViewById(R.id.textView12);
         text4=(TextView)root.findViewById(R.id.textView13);
         text5=(TextView)root.findViewById(R.id.textView14);
-        firebaseUser= FirebaseAuth.getInstance().getCurrentUser();
-        userUid=firebaseUser.getUid();
+
         BottomNavigation activity=(BottomNavigation) getActivity();
         mGoogleApiClient=activity.hi();
 
@@ -230,13 +283,19 @@ public class HomeFragment extends Fragment implements LocationListener,GoogleApi
     @Override
     public void onLocationChanged(Location location) {
         mLastLocation=location;
-        LatLng latLng=new LatLng(location.getLatitude(),location.getLongitude());
-        databaseReference=FirebaseDatabase.getInstance().getReference("patientUsers");
+        //LatLng latLng=new LatLng(location.getLatitude(),location.getLongitude());
+        //databaseReference=FirebaseDatabase.getInstance().getReference("patientUsers");
         //databaseReference.child(userUid).setValue(regNO);
-        DatabaseReference ref=FirebaseDatabase.getInstance().getReference(userUid);
 
+        firebaseUser= FirebaseAuth.getInstance().getCurrentUser();
+        userUid=firebaseUser.getUid();
+        DatabaseReference ref=FirebaseDatabase.getInstance().getReference("activePatients");
         GeoFire geoFire=new GeoFire(ref);
         geoFire.setLocation(userUid,new GeoLocation(mLastLocation.getLatitude(),mLastLocation.getLongitude()));
+        pickuplocation = new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude());
+        getClosestDriver();
+
+
 
     }
 

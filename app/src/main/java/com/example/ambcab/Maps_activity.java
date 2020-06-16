@@ -24,6 +24,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.directions.route.AbstractRouting;
+import com.directions.route.Route;
+import com.directions.route.RouteException;
+import com.directions.route.Routing;
+import com.directions.route.RoutingListener;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.google.android.gms.common.ConnectionResult;
@@ -42,18 +47,26 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 
-public class Maps_activity extends AppCompatActivity implements OnMapReadyCallback , GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener,LocationListener {
+public class Maps_activity extends AppCompatActivity implements OnMapReadyCallback , GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener,LocationListener , RoutingListener {
     ProgressBar progressBar;
     TextView textView;
     Location mLastLocation;
@@ -63,6 +76,7 @@ public class Maps_activity extends AppCompatActivity implements OnMapReadyCallba
     DatabaseReference databaseReference;
     DataSnapshot dataSnapshot;
     GoogleMap nMap;
+    String patientId=" ";
 
 
 
@@ -79,7 +93,89 @@ public class Maps_activity extends AppCompatActivity implements OnMapReadyCallba
         progressBar.setVisibility(View.VISIBLE);
         textView.setVisibility(View.VISIBLE);
         textView.setText("Searching for patient");
+
+        //getAssignedPatient();
     }
+
+    private void getAssignedPatient() {
+        String ambId=getIntent().getStringExtra("regNO");
+        DatabaseReference ambref=FirebaseDatabase.getInstance().getReference().child("activeAmb").child(ambId);
+        ambref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Map<String,Object> map=(Map<String,Object>) dataSnapshot.getValue();
+                if(map.get("assingnedPatientId")!=null){
+                    patientId=map.get("assingnedPatientId").toString();
+                    getAssignedPatientPickupLocation();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void getAssignedPatientPickupLocation() {
+        DatabaseReference getAssignedPatientPickupLocation=FirebaseDatabase.getInstance().getReference().child("activePatients").child(patientId).child("l");
+       getAssignedPatientPickupLocation.addValueEventListener(new ValueEventListener() {
+           @Override
+           public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+               if(dataSnapshot.exists()){
+                   List<Object> map=(List<Object>) dataSnapshot.getValue();
+                  double locationLat=0;
+                  double locationLng=0;
+                  if(map.get(0)!=null){
+                      locationLat=Double.parseDouble(map.get(0).toString());
+                  }
+                  if(map.get(1)!=null){
+                      locationLng=Double.parseDouble(map.get(1).toString());
+
+                  }
+                  LatLng patientLatLng=new LatLng(locationLat,locationLng);
+                  MarkerOptions markerOptions= new MarkerOptions().position(patientLatLng).title("Patient is here").icon(bitmapDescriptorFromVector(getApplicationContext(),R.drawable.ic_place_red_24dp));
+                  nMap.addMarker(markerOptions);
+                  getRouteToPatient(patientLatLng);
+               }
+           }
+
+           @Override
+           public void onCancelled(@NonNull DatabaseError databaseError) {
+
+           }
+       });
+    }
+
+
+    private void getAmbulanceLocation() {
+        String ambId=getIntent().getStringExtra("regNO");
+        DatabaseReference getAmbulanceLocation=FirebaseDatabase.getInstance().getReference().child("activeAmb").child(ambId).child("l");
+        getAmbulanceLocation.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    List<Object> map=(List<Object>) dataSnapshot.getValue();
+                    double locationLat=0;
+                    double locationLng=0;
+                    if(map.get(0)!=null){
+                        locationLat=Double.parseDouble(map.get(0).toString());
+                    }
+                    if(map.get(1)!=null){
+                        locationLng=Double.parseDouble(map.get(1).toString());
+
+                    }
+                    LatLng ambulanceLatLng=new LatLng(locationLat,locationLng);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
 
     FusedLocationProviderClient fusedLocationProviderClient;
     private static final int REQUEST_CODE=101;
@@ -94,6 +190,7 @@ public class Maps_activity extends AppCompatActivity implements OnMapReadyCallba
         textView.setOnClickListener(startOnClickListner);
         databaseReference = FirebaseDatabase.getInstance().getReference();
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        polylines = new ArrayList<>();
 
 
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED){
@@ -152,8 +249,8 @@ public class Maps_activity extends AppCompatActivity implements OnMapReadyCallba
     protected synchronized void buildGoogleApiClient()
     {
         mGoogleApiClient=new GoogleApiClient.Builder(this).addConnectionCallbacks(this).addOnConnectionFailedListener(this).addApi(LocationServices.API).build(); {
-            mGoogleApiClient.connect();
-        }
+        mGoogleApiClient.connect();
+    }
     }
 
 
@@ -202,9 +299,9 @@ public class Maps_activity extends AppCompatActivity implements OnMapReadyCallba
         String regNO=getIntent().getStringExtra("regNO");
         String ambId= regNO;
 
-        databaseReference=FirebaseDatabase.getInstance().getReference("ambAvaliable");
-        databaseReference.child(ambId).setValue(regNO);
-        DatabaseReference ref=FirebaseDatabase.getInstance().getReference("ambAvaliable");
+        databaseReference=FirebaseDatabase.getInstance().getReference("activeAmb");
+        databaseReference.child(ambId).setValue("true");
+        DatabaseReference ref=FirebaseDatabase.getInstance().getReference("activeAmb");
 
         GeoFire geoFire=new GeoFire(ref);
         geoFire.setLocation(ambId,new GeoLocation(mLastLocation.getLatitude(),mLastLocation.getLongitude()));
@@ -216,22 +313,77 @@ public class Maps_activity extends AppCompatActivity implements OnMapReadyCallba
     @Override
     protected void onStop() {
         super.onStop();
-        String regNO=getIntent().getStringExtra("regNO");
-        String ambId= regNO;
-        databaseReference=FirebaseDatabase.getInstance().getReference("ambAvaliable");
-        databaseReference.child(ambId).setValue(regNO);
+//        String regNO=getIntent().getStringExtra("regNO");
+//        String ambId= regNO;
+//
+//
+//        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+//        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("activeAmb");
+//
+//        GeoFire geoFire = new GeoFire(ref);
+//        geoFire.removeLocation(ambId);
 
-        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("ambAvailable");
 
-        GeoFire geoFire = new GeoFire(ref);
-        geoFire.removeLocation(ambId);
-
-
-//       DatabaseReference ref=FirebaseDatabase.getInstance().getReference("ambAvaliable");
+//       DatabaseReference ref=FirebaseDatabase.getInstance().getReference("activeAmb");
 //
 //        GeoFire geoFire=new GeoFire(ref);
 //        geoFire.removeLocation(ambId);
 
     }
+    private void getRouteToPatient(LatLng patientLatLng) {
+        Routing routing = new Routing.Builder()
+                .travelMode(AbstractRouting.TravelMode.DRIVING)
+                .withListener(this)
+                .alternativeRoutes(false)
+                .waypoints(new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude()), patientLatLng)
+                .build();
+        routing.execute();
+    }
+
+
+    @Override
+    public void onRoutingFailure(RouteException e) {
+        if(e != null) {
+            Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }else {
+            Toast.makeText(this, "Something went wrong, Try again", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onRoutingStart() {
+
+    }
+    private List<Polyline> polylines;
+    private static final int[] COLORS = new int[]{R.color.primary_dark_material_light};
+    @Override
+    public void onRoutingSuccess(ArrayList<Route> route, int shortestRouteIndex) {
+        polylines = new ArrayList<>();
+        //add route(s) to the map.
+        for (int i = 0; i <route.size(); i++) {
+
+            //In case of more than 5 alternative routes
+            int colorIndex = i % COLORS.length;
+
+            PolylineOptions polyOptions = new PolylineOptions();
+            polyOptions.color(getResources().getColor(COLORS[colorIndex]));
+            polyOptions.width(10 + i * 3);
+            polyOptions.addAll(route.get(i).getPoints());
+            Polyline polyline = nMap.addPolyline(polyOptions);
+            polylines.add(polyline);
+
+            Toast.makeText(getApplicationContext(),"Route "+ (i+1) +": distance - "+ route.get(i).getDistanceValue()+": duration - "+ route.get(i).getDurationValue(),Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onRoutingCancelled() {
+
+    }
+//    private void erasePolylines(){
+//        for(Polyline line: polylines){
+//            line.remove();
+//        }                                         //to erase polylines after ambulance reaches patient
+//        polylines.clear();
+//    }
 }

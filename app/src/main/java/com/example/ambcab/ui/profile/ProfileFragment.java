@@ -54,7 +54,7 @@ public class ProfileFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String val=dataSnapshot.child(userUid).child("name").getValue(String.class);
                 String val1=dataSnapshot.child(userUid).child("email").getValue(String.class);
-                String val2=dataSnapshot.child(userUid).child("contactNO").getValue(String.class);
+                String val2=dataSnapshot.child(userUid).child("contactNO").getValue(String.class);      //TODO:add logout button
                 name.setText(val);
                 email.setText(val1);
                 phoneno.setText(val2);
