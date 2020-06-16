@@ -147,34 +147,34 @@ public class Maps_activity extends AppCompatActivity implements OnMapReadyCallba
        });
     }
 
-
-    private void getAmbulanceLocation() {
-        String ambId=getIntent().getStringExtra("regNO");
-        DatabaseReference getAmbulanceLocation=FirebaseDatabase.getInstance().getReference().child("activeAmb").child(ambId).child("l");
-        getAmbulanceLocation.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()){
-                    List<Object> map=(List<Object>) dataSnapshot.getValue();
-                    double locationLat=0;
-                    double locationLng=0;
-                    if(map.get(0)!=null){
-                        locationLat=Double.parseDouble(map.get(0).toString());
-                    }
-                    if(map.get(1)!=null){
-                        locationLng=Double.parseDouble(map.get(1).toString());
-
-                    }
-                    LatLng ambulanceLatLng=new LatLng(locationLat,locationLng);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
+//
+//    private void getAmbulanceLocation() {
+//        String ambId=getIntent().getStringExtra("regNO");
+//        DatabaseReference getAmbulanceLocation=FirebaseDatabase.getInstance().getReference().child("activeAmb").child(ambId).child("l");
+//        getAmbulanceLocation.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                if(dataSnapshot.exists()){
+//                    List<Object> map=(List<Object>) dataSnapshot.getValue();
+//                    double locationLat=0;
+//                    double locationLng=0;
+//                    if(map.get(0)!=null){
+//                        locationLat=Double.parseDouble(map.get(0).toString());
+//                    }
+//                    if(map.get(1)!=null){
+//                        locationLng=Double.parseDouble(map.get(1).toString());
+//
+//                    }
+//                    LatLng ambulanceLatLng=new LatLng(locationLat,locationLng);
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
 
 
     FusedLocationProviderClient fusedLocationProviderClient;
