@@ -52,6 +52,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -93,20 +94,55 @@ public class Maps_activity extends AppCompatActivity implements OnMapReadyCallba
         progressBar.setVisibility(View.VISIBLE);
         textView.setVisibility(View.VISIBLE);
         textView.setText("Searching for patient");
+        getAssignedPatient();
 
-        //getAssignedPatient();
     }
 
     private void getAssignedPatient() {
         String ambId=getIntent().getStringExtra("regNO");
-        DatabaseReference ambref=FirebaseDatabase.getInstance().getReference().child("activeAmb").child(ambId);
-        ambref.addValueEventListener(new ValueEventListener() {
+        DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference().child("assignedAmb").child(ambId);
+//        ambref.addChildEventListener(new ChildEventListener() {
+//            @Override
+//            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//                Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
+//                if (map.get("assingnedPatientId") != null) {
+//                    patientId = map.get("assingnedPatientId").toString();
+//                    getAssignedPatientPickupLocation();
+//                }
+//            }
+//            @Override
+//            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//
+//            }
+//
+//            @Override
+//            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+//
+//            }
+//
+//            @Override
+//            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+
+
+        databaseReference.addValueEventListener(new ValueEventListener()
+        {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Map<String,Object> map=(Map<String,Object>) dataSnapshot.getValue();
-                if(map.get("assingnedPatientId")!=null){
-                    patientId=map.get("assingnedPatientId").toString();
-                    getAssignedPatientPickupLocation();
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot)
+            {
+                if( dataSnapshot.exists()) {
+                    Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
+                    if (map.containsKey("assingnedPatientId")) {
+                        patientId = map.get("assingnedPatientId").toString();
+                        getAssignedPatientPickupLocation();
+                    }
                 }
             }
 
@@ -119,32 +155,32 @@ public class Maps_activity extends AppCompatActivity implements OnMapReadyCallba
 
     private void getAssignedPatientPickupLocation() {
         DatabaseReference getAssignedPatientPickupLocation=FirebaseDatabase.getInstance().getReference().child("activePatients").child(patientId).child("l");
-       getAssignedPatientPickupLocation.addValueEventListener(new ValueEventListener() {
-           @Override
-           public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-               if(dataSnapshot.exists()){
-                   List<Object> map=(List<Object>) dataSnapshot.getValue();
-                  double locationLat=0;
-                  double locationLng=0;
-                  if(map.get(0)!=null){
-                      locationLat=Double.parseDouble(map.get(0).toString());
-                  }
-                  if(map.get(1)!=null){
-                      locationLng=Double.parseDouble(map.get(1).toString());
+        getAssignedPatientPickupLocation.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    List<Object> map=(List<Object>) dataSnapshot.getValue();
+                    double locationLat=0;
+                    double locationLng=0;
+                    if(map.get(0)!=null){
+                        locationLat=Double.parseDouble(map.get(0).toString());
+                    }
+                    if(map.get(1)!=null){
+                        locationLng=Double.parseDouble(map.get(1).toString());
 
-                  }
-                  LatLng patientLatLng=new LatLng(locationLat,locationLng);
-                  MarkerOptions markerOptions= new MarkerOptions().position(patientLatLng).title("Patient is here").icon(bitmapDescriptorFromVector(getApplicationContext(),R.drawable.ic_place_red_24dp));
-                  nMap.addMarker(markerOptions);
-                  getRouteToPatient(patientLatLng);
-               }
-           }
+                    }
+                    LatLng patientLatLng=new LatLng(locationLat,locationLng);
+                    MarkerOptions markerOptions= new MarkerOptions().position(patientLatLng).title("Patient is here").icon(bitmapDescriptorFromVector(getApplicationContext(),R.drawable.ic_place_red_24dp));
+                    nMap.addMarker(markerOptions);
+                    getRouteToPatient(patientLatLng);
+                }
+            }
 
-           @Override
-           public void onCancelled(@NonNull DatabaseError databaseError) {
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-           }
-       });
+            }
+        });
     }
 
 //
@@ -244,6 +280,7 @@ public class Maps_activity extends AppCompatActivity implements OnMapReadyCallba
 //        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,15));
 //        googleMap.addMarker(markerOptions);
 
+
     }
 
     protected synchronized void buildGoogleApiClient()
@@ -313,15 +350,15 @@ public class Maps_activity extends AppCompatActivity implements OnMapReadyCallba
     @Override
     protected void onStop() {
         super.onStop();
-//        String regNO=getIntent().getStringExtra("regNO");
-//        String ambId= regNO;
-//
-//
-//        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-//        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("activeAmb");
-//
-//        GeoFire geoFire = new GeoFire(ref);
-//        geoFire.removeLocation(ambId);
+          String ambId=getIntent().getStringExtra("regNO");
+
+
+
+        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("activeAmb");
+
+        GeoFire geoFire = new GeoFire(ref);
+        geoFire.removeLocation(ambId);
 
 
 //       DatabaseReference ref=FirebaseDatabase.getInstance().getReference("activeAmb");

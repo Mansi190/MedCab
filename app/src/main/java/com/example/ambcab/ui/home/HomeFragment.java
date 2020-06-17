@@ -10,6 +10,7 @@ import android.location.Location;
 
 
 import com.example.ambcab.BottomNavigation;
+import com.example.ambcab.patientUserHelperClass;
 import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.GeoQueryEventListener;
 import com.google.android.gms.common.ConnectionResult;
@@ -67,7 +68,7 @@ public class HomeFragment extends Fragment implements LocationListener,GoogleApi
     private Handler mHandler = new Handler();
     public int mValue=0;
 
-
+    private static final int REQUEST_CODE=101;
     private Runnable incrementRunnable = new Runnable() {
         @Override
         public void run() {
@@ -177,8 +178,9 @@ public class HomeFragment extends Fragment implements LocationListener,GoogleApi
                     ambulanceFound = true;
                     ambId=key;
 
-                    DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference().child("activeAmb").child(ambId);
-                    HashMap hmap=new HashMap();
+                    DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference().child("assignedAmb").child(ambId);
+
+                    HashMap<String,Object> hmap=new HashMap();
                     hmap.put("assingnedPatientId",userUid);
                     databaseReference.updateChildren(hmap);
                 }
@@ -262,8 +264,25 @@ public class HomeFragment extends Fragment implements LocationListener,GoogleApi
                 return true;
             }
         });
+        if(ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED){
 
+            ActivityCompat.requestPermissions(getActivity(),new String[]
+                    {Manifest.permission.ACCESS_FINE_LOCATION},REQUEST_CODE);
+        }
         return root;
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode){
+
+            case REQUEST_CODE:
+                if(grantResults.length>0 && grantResults[0]==PackageManager.PERMISSION_GRANTED) {
+
+                }
+                break;
+        }
+
     }
 
     void getlocation(){
@@ -300,6 +319,7 @@ public class HomeFragment extends Fragment implements LocationListener,GoogleApi
     }
 
 
+
     @Override
     public void onConnected(@Nullable Bundle bundle) {
 
@@ -314,4 +334,26 @@ public class HomeFragment extends Fragment implements LocationListener,GoogleApi
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
+
+
+    @Override
+    public void onStop() {
+
+        super.onStop();
+
+
+        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("activePatients");
+
+        GeoFire geoFire = new GeoFire(ref);
+        geoFire.removeLocation(userUid);
+
+
+//       DatabaseReference ref=FirebaseDatabase.getInstance().getReference("activeAmb");
+//
+//        GeoFire geoFire=new GeoFire(ref);
+//        geoFire.removeLocation(ambId);
+
+    }
+
 }
