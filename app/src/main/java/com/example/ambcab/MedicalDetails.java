@@ -21,11 +21,11 @@ public class MedicalDetails extends AppCompatActivity {
     DatabaseReference reference;
     FirebaseUser firebaseUser;
 
-    String weight,age,emergencyNO;
+    String weight,height,emergencyNO;
     Dialog blood_group_selector;
     String bloodgroup,userUid;
     Button blood_group_Button,Submit_button;
-    EditText regWeight,regAge,regEmergencyNO;
+    EditText regWeight,regheight,regEmergencyNO;
     private  View.OnClickListener SubmitOnClickListner=new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -43,7 +43,7 @@ public class MedicalDetails extends AppCompatActivity {
         blood_group_selector=new Dialog(this);
         Submit_button.setOnClickListener(SubmitOnClickListner);
         regWeight=findViewById(R.id.editText);
-        regAge=findViewById(R.id.editText1);
+        regheight=findViewById(R.id.editText1);
         regEmergencyNO=findViewById(R.id.editText2);
         firebaseUser= FirebaseAuth.getInstance().getCurrentUser();
         userUid=firebaseUser.getUid();
@@ -141,13 +141,13 @@ public class MedicalDetails extends AppCompatActivity {
         final String contactNo=getIntent().getStringExtra("contactNo");         //TODO:send data to home fragment and add it to firebase
         final String DOB=getIntent().getStringExtra("DOB");
         weight=regWeight.getText().toString();
-        age=regAge.getText().toString();
+        height=regheight.getText().toString();
         emergencyNO=regEmergencyNO.getText().toString();
 
-        patientUserHelperClass helperClass=new patientUserHelperClass(name,email,DOB,contactNo,bloodgroup,weight,age,emergencyNO);
+        patientUserHelperClass helperClass=new patientUserHelperClass(name,email,DOB,contactNo,bloodgroup,weight,height,emergencyNO);
 
         reference.child(userUid).setValue(helperClass);
-        Intent i = new Intent(this,BottomNavigation.class);
+        Intent i = new Intent(this,welcomePage.class);
         startActivity(i);
     }
 }

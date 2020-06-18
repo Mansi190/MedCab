@@ -84,7 +84,7 @@ public class starting extends AppCompatActivity {
 
     }
     private void login() {
-        Intent i = new Intent(this,register.class);
+        Intent i = new Intent(this,Select_user.class);
         startActivity(i);
         overridePendingTransition(R.anim.slideinright,R.anim.slideoutleft);
 

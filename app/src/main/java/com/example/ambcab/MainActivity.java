@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
 //                    startActivity(intent);
 //                }
                // else {
-                    Intent homeIntent = new Intent(MainActivity.this, Select_user.class);
+                    Intent homeIntent = new Intent(MainActivity.this, starting.class);
                     startActivity(homeIntent);
                     finish();
               //  }

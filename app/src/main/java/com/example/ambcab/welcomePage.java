@@ -17,7 +17,7 @@ public class welcomePage extends AppCompatActivity {
     };
 
     private void welcome() {
-        Intent i = new Intent(this,verifyotp.class);
+        Intent i = new Intent(this,BottomNavigation.class);
         startActivity(i);
     }
 
